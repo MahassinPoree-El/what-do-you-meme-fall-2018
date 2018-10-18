@@ -1,16 +1,31 @@
-const math = require('./math');
-const express = require("express");
+const express = require('express');
 
-var something = math.add(1,2);
+const game = require('./game/controller');
 
-console.log("1 + 2 = " + something);
+
 
 const app = express();
 
-app.use("/", function(req, res, next)
-{
-    res.send("Hllow world");
-});
 
 
-app.listen(3000);
+const port = 3000;
+
+const server = "localhost";
+
+
+
+app.use(express.json());
+
+app.use(express.urlencoded({extended: true}));
+
+app.use("/", express.static(__dirname + "/../dist/")); //static middleware looks at path & sends it bck to client
+//take every url & pass it to the static function
+app.use('/game', game);
+
+
+
+app.listen(port);
+
+
+// eslint-disable-next-line no-console
+console.log(`listening on: http://${server}:${port}`);
