@@ -2,47 +2,41 @@ const api_root = "http://localhost:80/game";
 let playerId = 0;
 
 export function GetState(){
-    return myFetch(api_root + "/")
-            .then(function(response) {
-                return response.json();
-            });
+    return myFetch(api_root + "/");
 }
 export function GetMyCaptions(){
-    myFetch(api_root + "/players", {name:"Mahassin"})    
-    return myFetch(api_root + `/captions/:${playerId}`);
+    return myFetch(api_root + `/players`, {name: "Mahassin"})
+     .then(x=> myFetch(api_root + `/captions/${playerId}`));
 }
-
 export function FlipPicture(){
     return myFetch(api_root + "/picture", {})
-            
 }
 
-
+export function GetPlayers()
+{
+    return myFetch(api_root + '/players')
+}
 
 
 
   function myFetch(url = ``, data = null) {
-        let options = {
-          method:  "POST", // *GET, POST, PUT, DELETE, etc.
-          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-          credentials: "same-origin", // include, same-origin, *omit
+      let options = {
+            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "same-origin", // include, same-origin, *omit
       };
-      if(data)
-      {
-          options = {
-              ...options,
-              method:  "POST", // *GET, POST, PUT, DELETE, etc.
-              headers: {
-                  "Content-Type": "application/json; charset=utf-8",
-                  // "Content-Type": "application/x-www-form-urlencoded",
-              },
-              body: JSON.stringify(data), // body data type must match "Content-Type" header
-            };
+      if(data){
+          options = { 
+            ...options,
+            method:  "POST", // *GET, POST, PUT, DELETE, etc.
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                // "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: JSON.stringify(data), // body data type must match "Content-Type" header
+          };
       }
       return fetch(url, options)
       .then(response =>{
         return response.json()
-
-      }
-        ); // parses response to JSON
+      }); // parses response to JSON
   }
