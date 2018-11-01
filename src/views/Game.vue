@@ -70,7 +70,7 @@ export default {
     methods: {
         showPlayers: function(){
             GetPlayers()
-            .then(x=> GetSt())
+            .then(x=> GetState())
             .then(x=> this.state = x)
         },
         flipPicture: function(){
