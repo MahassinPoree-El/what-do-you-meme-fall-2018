@@ -7,17 +7,25 @@
     <div class="row">
         <div class="col-md-4">
             <div class="card" >
-                    <h5 class="card-header">Players</h5>
+                    <h5 class="card-header">
+                        Players
+                        <a @click.prevent="login" class="btn btn-sm btn-primary" :class="{disabled: playerId() !== null}">+</a>
+                    </h5>
                     <ul class="list-group list-group-flush">
                         <li v-for="p in state.players" :key="p.id"
-                            class="list-group-item">{{p.name}}
+                            class="list-group-item">
+                            <img />
+                            <h5>{{p.name}}</h5>
                             <span class="badge badge-primary badge-pill">{{p.score}}</span>
                         </li>
+ 
                     </ul>
-                
             </div>
             <div class="card" >
-                    <h5 class="card-header">My Captions</h5>
+                <h5 class="card-header">My Captions</h5>
+                <ul class="list-group list-group-flush">
+                    <li v-for="c in myCaptions" :key="c" class="list-group-item">{{c}}</li>
+                </ul>
             </div>
         </div>
         <div class="col-md-4">
@@ -29,10 +37,10 @@
         </div>
         <div class="col-md-4">
             <div class="card" >
-                    <h5 class="card-header">Played Captions</h5>
-                    <ul class="list-group list-group-flush">
-                        <li v-for="c in stat.playedCaptions" :key="c.text" class="list-group-item">{{c}}</li>
-                    </ul>
+                <h5 class="card-header">Played Captions</h5>
+                <ul class="list-group list-group-flush">
+                    <li v-for="c in state.playedCaptions" :key="c.text" class="list-group-item">{{c}}</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -43,19 +51,19 @@
     li.list-group-item {
         display: flex;
         align-content: center;
-        img{
+        justify-content: space-between;
+        img {
             width: 30px; height: 30px;
             margin-right: 5px;
         }
-
-        h5{
+        h5 {
             flex-grow: 1;
         }
     }
 </style>
 
-<script>
-import { GetState, FlipPicture, GetMyCaptions, GetPlayers } from '@/services/api_access';
+<script> // everything u make in the api u gotta put it in this import too
+import * as api from '@/services/api_access';
 export default {
     data: function(){
         return {
@@ -65,27 +73,27 @@ export default {
                 playedCaptions: [],
             },
             myCaptions: [],
+            //playerId: null
         }
     },
     created: function(){
-        GetState()
-        .then(x=> this.state = x);
-        GetMyCaptions()
-        .then(x=> this.myCaptions = x)
-        GetPlayers()
-        .then(x=> this.state.players = x)
+        this.refresh();
     },
     methods: {
-        showPlayers: function(){
-            GetPlayers()
-            .then(x=> GetState())
+        refresh(){
+            api.GetState()
             .then(x=> this.state = x)
         },
         flipPicture: function(){
-            FlipPicture()
-            .then(x=> GetState())
-            .then(x=> this.state = x)
-        }
+            api.FlipPicture()
+            .then(()=> this.refresh())
+        },
+        login: function() {
+            api.Login(prompt('What is your name?'))
+            .then(()=>  api.GetMyCaptions().then(x=> this.myCaptions = x) )
+            .then(()=> this.refresh())
+        },
+        playerId: ()=> api.playerId
     }
 }
 </script>
