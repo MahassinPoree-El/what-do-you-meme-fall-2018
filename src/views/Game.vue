@@ -9,7 +9,7 @@
             <div class="card" >
                     <h5 class="card-header">
                         Players
-                        <a @click.prevent="login" class="btn btn-sm btn-primary" :class="{disabled: playerId() !== null}">+</a>
+                        <a @click.prevent="login" class="btn btn-sm btn-primary" :class="{disabled: playerId !== null}">+</a>
                     </h5>
                     <ul class="list-group list-group-flush">
                         <li v-for="p in state.players" :key="p.id"
@@ -64,8 +64,9 @@
 
 <script> // everything u make in the api u gotta put it in this import too
 import * as api from '@/services/api_access';
-export default {
-    data: function(){
+
+export default {//vue object
+    data(){
         return {
             state: {
                 picture: "",
@@ -84,16 +85,19 @@ export default {
             api.GetState()
             .then(x=> this.state = x)
         },
-        flipPicture: function(){
+        flipPicture(){
             api.FlipPicture()
             .then(()=> this.refresh())
         },
-        login: function() {
+        login() {
             api.Login(prompt('What is your name?'))
             .then(()=>  api.GetMyCaptions().then(x=> this.myCaptions = x) )
             .then(()=> this.refresh())
         },
+    },
+    computed: {
         playerId: ()=> api.playerId
+
     }
 }
 </script>
