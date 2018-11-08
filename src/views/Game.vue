@@ -9,7 +9,7 @@
             <div class="card" >
                     <h5 class="card-header">
                         Players
-                        <a @click.prevent="login" class="btn btn-sm btn-primary" :class="{disabled: playerId !== null}">+</a>
+                        <a @click.prevent="login" class="btn btn-sm btn-primary" :class="{disabled: playerId() !== null}">+</a>
                     </h5>
                     <ul class="list-group list-group-flush">
                         <li v-for="p in state.players" :key="p.id"
@@ -24,7 +24,9 @@
             <div class="card" >
                 <h5 class="card-header">My Captions</h5>
                 <ul class="list-group list-group-flush">
-                    <li v-for="c in myCaptions" :key="c" class="list-group-item">{{c}}</li>
+                    <li v-for="c in myCaptions" :key="c"
+                        @click.prevent="submitCaption(c)"
+                        class="list-group-item">{{c}}</li>
                 </ul>
             </div>
         </div>
@@ -39,7 +41,15 @@
             <div class="card" >
                 <h5 class="card-header">Played Captions</h5>
                 <ul class="list-group list-group-flush">
-                    <li v-for="c in state.playedCaptions" :key="c.text" class="list-group-item">{{c}}</li>
+                    <li v-for="c in state.playedCaptions" :key="c.text"
+                        class="list-group-item">
+                        {{c.text }}
+                        <div>
+                            <a  v-if="isDealer"
+                                @click.prevent="chooseCaption(c)"
+                                class="btn btn-primary btn-sm">Choose</a>
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -64,8 +74,7 @@
 
 <script> // everything u make in the api u gotta put it in this import too
 import * as api from '@/services/api_access';
-
-export default {//vue object
+export default {
     data(){
         return {
             state: {
@@ -74,11 +83,14 @@ export default {//vue object
                 playedCaptions: [],
             },
             myCaptions: [],
-            //playerId: null
         }
     },
-    created: function(){
-        this.refresh();
+    created(){
+        loopTimer = setInterval(this.refresh, 1000);
+        if(api.playerId !== null && this.myCaptions.length == 0)
+        {
+            api.GetMyCaptions().then(x=> this.myCaptions = x)
+        }
     },
     methods: {
         refresh(){
@@ -91,13 +103,29 @@ export default {//vue object
         },
         login() {
             api.Login(prompt('What is your name?'))
-            .then(()=>  api.GetMyCaptions().then(x=> this.myCaptions = x) )
+            .then(()=> api.GetMyCaptions().then(x=> this.myCaptions = x) )
             .then(()=> this.refresh())
         },
+        submitCaption(c){
+            api.SubmitCaption(c)
+            .then(x=> {
+                this.myCaptions.splice(this.myCaptions.indexOf(c), 1);
+                this.myCaptions.push(x[0]);
+            })
+            .then(()=> this.refresh())
+        },
+        chooseCaption(c){
+            api.ChooseCaption(c)
+            .then(()=> this.refresh())
+        },
+        playerId: ()=> api.playerId
     },
     computed: {
-        playerId: ()=> api.playerId
-
+        isDealer(){
+            return this.playerId() == this.state.dealerId;
+        }
     }
 }
 </script>
+
+

@@ -48,7 +48,7 @@ app.post('/picture', (req, res) => {
 
 })
 
-app.post('/playedCaptions', (req, res) => {
+app.post('/playedCaptions/choose', (req, res) => {
 
     var playerId = req.header("playerId");
 
