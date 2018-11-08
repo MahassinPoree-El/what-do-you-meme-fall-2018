@@ -10,12 +10,17 @@
                     <h5 class="card-header">
                         Players
                         <a @click.prevent="login" class="btn btn-sm btn-primary" :class="{disabled: playerId() !== null}">+</a>
+                        <span ve-if="playerId() !== null">(Welcome {{state.players[playerId()].name}}) </span>
                     </h5>
                     <ul class="list-group list-group-flush">
                         <li v-for="p in state.players" :key="p.id"
                             class="list-group-item">
                             <img />
                             <h5>{{p.name}}</h5>
+                            <span v-if="p.id == state.dealerId" class="badge badge-success">
+                                Dealer
+
+                            </span> &nbsp;
                             <span class="badge badge-primary badge-pill">{{p.score}}</span>
                         </li>
  
@@ -48,6 +53,8 @@
                             <a  v-if="isDealer"
                                 @click.prevent="chooseCaption(c)"
                                 class="btn btn-primary btn-sm">Choose</a>
+                                <span class="badge">{{c.playerName}}
+                                </span>
                         </div>
                     </li>
                 </ul>
@@ -62,6 +69,7 @@
         display: flex;
         align-content: center;
         justify-content: space-between;
+        flex-wrap: wrap;
         img {
             width: 30px; height: 30px;
             margin-right: 5px;
@@ -73,6 +81,8 @@
 </style>
 
 <script> // everything u make in the api u gotta put it in this import too
+let loopTimer = null;
+//cant rely of JS dwnlded on browser cuz issa security risque
 import * as api from '@/services/api_access';
 export default {
     data(){
