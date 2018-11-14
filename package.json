@@ -42,7 +42,11 @@
   "postcss": {
     "plugins": {
       "autoprefixer": {}
-    }
+    },
+  "globals" : {
+    "FB": false
+
+  }
   },
   "browserslist": [
     "> 1%",

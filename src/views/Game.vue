@@ -53,7 +53,9 @@
                             <a  v-if="isDealer"
                                 @click.prevent="chooseCaption(c)"
                                 class="btn btn-primary btn-sm">Choose</a>
-                                <span class="badge">{{c.playerName}}
+                                <span class="badge" :class= c.playerName ? 'badge-success': "badge-secondary">
+                                    
+                                    {{c.playerName || "Hidden"}}
                                 </span>
                         </div>
                     </li>
@@ -84,6 +86,7 @@
 let loopTimer = null;
 //cant rely of JS dwnlded on browser cuz issa security risque
 import * as api from '@/services/api_access';
+import * as fb from '@/ services/facebook';
 export default {
     data(){
         return {
@@ -112,9 +115,10 @@ export default {
             .then(()=> this.refresh())
         },
         login() {
-            api.Login(prompt('What is your name?'))
-            .then(()=> api.GetMyCaptions().then(x=> this.myCaptions = x) )
-            .then(()=> this.refresh())
+            fb.FBlogin();
+            //api.Login(prompt('What is your name?'))
+            //.then(()=> api.GetMyCaptions().then(x=> this.myCaptions = x) )
+            //.then(()=> this.refresh())
         },
         submitCaption(c){
             api.SubmitCaption(c)

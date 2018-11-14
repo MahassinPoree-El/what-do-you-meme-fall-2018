@@ -88,17 +88,32 @@ class Game {
 
     }
 
+    login(name, id, access_token)
+    {
+        let player = this.players.find(x => x.fbId == fbId)
+       if(!player)
+       {
+            player = new Player(req.body.name, this.players.length);
+
+            this.players.push(player) ;
+    
+       } 
+
+       player.access_token = access_token;
+       return player;
+    }  
+
 }
 
 
 
 class Player{
 
-    constructor(name, id){
+    constructor(name, id, fbId){
 
         let _Captions = captions.slice(iCaptions, iCaptions += 7);
 
-
+        this,fbId = fbId
 
         this.id = id;
 
