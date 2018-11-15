@@ -1,8 +1,9 @@
+
 <template>
   <div id="app" class="container">
     <div class="display-3">
       <img alt="Vue logo" src="./assets/logo.png" id="logo">
-      What do you Meme
+      What do you Meme 2k18
     </div>
     <Nav />
     <router-view/>

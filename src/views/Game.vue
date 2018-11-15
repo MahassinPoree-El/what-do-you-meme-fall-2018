@@ -10,7 +10,7 @@
                     <h5 class="card-header">
                         Players
                         <a @click.prevent="login" class="btn btn-sm btn-primary" :class="{disabled: playerId() !== null}">+</a>
-                        <span ve-if="playerId() !== null">(Welcome {{state.players[playerId()].name}}) </span>
+                        <i v-if="playerId() !== null">(Welcome {{state.players[playerId()].name}})</i>
                     </h5>
                     <ul class="list-group list-group-flush">
                         <li v-for="p in state.players" :key="p.id"
@@ -19,7 +19,6 @@
                             <h5>{{p.name}}</h5>
                             <span v-if="p.id == state.dealerId" class="badge badge-success">
                                 Dealer
-
                             </span> &nbsp;
                             <span class="badge badge-primary badge-pill">{{p.score}}</span>
                         </li>
@@ -47,17 +46,14 @@
                 <h5 class="card-header">Played Captions</h5>
                 <ul class="list-group list-group-flush">
                     <li v-for="c in state.playedCaptions" :key="c.text"
-                        class="list-group-item">
+                        class="list-group-item" :class="{ 'list-group-item-warning' : c.isChosen }">
                         {{c.text }}
-                        <div>
-                            <a  v-if="isDealer"
-                                @click.prevent="chooseCaption(c)"
-                                class="btn btn-primary btn-sm">Choose</a>
-                                <span class="badge" :class= c.playerName ? 'badge-success': "badge-secondary">
-                                    
-                                    {{c.playerName || "Hidden"}}
-                                </span>
-                        </div>
+                        <a  v-if="isDealer"
+                            @click.prevent="chooseCaption(c)"
+                            class="btn btn-primary btn-sm">Choose</a>
+                        <span class="badge" :class="c.playerName ? 'badge-success' : 'badge-secondary'">
+                            {{c.playerName || 'Hidden'}}
+                        </span>
                     </li>
                 </ul>
             </div>
@@ -69,7 +65,7 @@
 <style lang="scss">
     li.list-group-item {
         display: flex;
-        align-content: center;
+        align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
         img {
@@ -82,11 +78,12 @@
     }
 </style>
 
-<script> // everything u make in the api u gotta put it in this import too
-let loopTimer = null;
+<script>// everything u make in the api u gotta put it in this import too
+
 //cant rely of JS dwnlded on browser cuz issa security risque
 import * as api from '@/services/api_access';
-import * as fb from '@/ services/facebook';
+import * as fb from '@/services/facebook';
+let loopTimer = null;
 export default {
     data(){
         return {
@@ -100,9 +97,8 @@ export default {
     },
     created(){
         loopTimer = setInterval(this.refresh, 1000);
-        if(api.playerId !== null && this.myCaptions.length == 0)
-        {
-            api.GetMyCaptions().then(x=> this.myCaptions = x)
+        if(api.playerId !== null && this.myCaptions.length == 0){
+            api.GetMyCaptions().then(x=> this.myCaptions = x);
         }
     },
     methods: {
@@ -112,13 +108,10 @@ export default {
         },
         flipPicture(){
             api.FlipPicture()
-            .then(()=> this.refresh())
         },
         login() {
-            fb.FBlogin();
-            //api.Login(prompt('What is your name?'))
+            fb.FBLogin();
             //.then(()=> api.GetMyCaptions().then(x=> this.myCaptions = x) )
-            //.then(()=> this.refresh())
         },
         submitCaption(c){
             api.SubmitCaption(c)
@@ -126,11 +119,9 @@ export default {
                 this.myCaptions.splice(this.myCaptions.indexOf(c), 1);
                 this.myCaptions.push(x[0]);
             })
-            .then(()=> this.refresh())
         },
         chooseCaption(c){
             api.ChooseCaption(c)
-            .then(()=> this.refresh())
         },
         playerId: ()=> api.playerId
     },
@@ -141,5 +132,3 @@ export default {
     }
 }
 </script>
-
-
