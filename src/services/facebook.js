@@ -1,22 +1,18 @@
-  
-  
-import * as api from './api_access';
+import * as api from './api_access'
 
-  window.fbAsyncInit = function() {
+window.fbAsyncInit = function() {
     FB.init({
-      appId      : '262388067779146',
+      appId      : '296547064527762',
       cookie     : true,
       xfbml      : true,
       version    : 'v3.0'
     });
       
-    FB.AppEvents.logPageView(); 
+    FB.AppEvents.logPageView();   
     
-    
-FB.getLoginStatus(function(response) {
-    statusChangeCallback(response);
+    FB.getLoginStatus(function(response) {
+        statusChangeCallback(response);
     });
-      
   };
 
   (function(d, s, id){
@@ -28,17 +24,25 @@ FB.getLoginStatus(function(response) {
    }(document, 'script', 'facebook-jssdk'));
 
    export function FBLogin(){
-       FB.login(response => statusChangeCallback(response), 
-       {scope: 'public_profile,email'}
+       FB.login(
+           response => statusChangeCallback(response),
+           {scope: 'public_profile,email'}
        )
    }
 
-   function statusChangeCallback(response)
+   export function GetPhotos()
    {
+       FB.api("/me/photos", photos => 
+       {
+           console.log(photos);
+       })
+   }
+
+   function statusChangeCallback(response){
        console.log(response);
-       FB.api('/me', me => {
-           console.log(me);
+       FB.api("/me", me => {
+        console.log(me);
+        api.Login(me.name, response.authResponse.userID, response.authResponse.accessToken)
 
        })
-       api.Login(me.name, response.);
    }
