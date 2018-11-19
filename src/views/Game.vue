@@ -42,7 +42,8 @@
                     <a @click.prevent="getFBPictures" class="btn btn-secondary">From FB</a>
                 </div>
                 <div>
-                    <img v-for="p in fbPictures" :src="p.picture" :key="p.id" />
+                    <PicturePicker> </PicturePicker>
+                    <PictureTaker> </PictureTaker>
                 </div>            
             </div>
         </div>
