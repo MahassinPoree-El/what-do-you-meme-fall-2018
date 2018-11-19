@@ -2,6 +2,7 @@
     <div class ="panel panel-default">
         this is the picture taker
         <video ref="video" id="video" autoplay></video> 
+        <PicturePicker :pictures = "captures"></PicturePicker>
         <canvas ref="canvas" id="canvas"></canvas>
        
     </div>
@@ -13,6 +14,7 @@ export default {// is a vue object
     {
         return 
         {
+            captures: []
 
         }
     },
@@ -21,7 +23,11 @@ export default {// is a vue object
         capture() //for animation
         {
             this.canvas.getContext("2d").drawImage(this.video, 0, 0, 640, 480);
-            this.captures.push(this.canvas.toDataURL("image/png"));
+            this.captures.push({
+                
+                id: this.captures.length,
+                picture: this.canvas.toDataURL("image/png")
+            });
         }
     },
     mounted()
