@@ -15,7 +15,7 @@
                     <ul class="list-group list-group-flush">
                         <li v-for="p in state.players" :key="p.id"
                             class="list-group-item">
-                            <img :src="`https://graph.facebook.com/${p.fbId}/picture`"/>
+                            <img :src="`https://graph.facebook.com/${p.fbid}/picture`" />
                             <h5>{{p.name}}</h5>
                             <span v-if="p.id == state.dealerId" class="badge badge-success">
                                 Dealer
@@ -37,11 +37,13 @@
         <div class="col-md-4">
             <div class="card" >
                 <img class="card-img" :src="state.picture.url" :alt="state.picture.name">
-                <div class="btn-group" role="group" aria-label="Basic example">
+                <div class="btn-group " style="width:100%" role="group" aria-label="Basic example">
                     <a @click.prevent="flipPicture" class="btn btn-primary">Flip Picture</a>
-                    <button type="button" class="btn btn-secondary"> To Facebook</button>
+                    <a @click.prevent="getFBPictures" class="btn btn-secondary">From FB</a>
                 </div>
-
+                <div>
+                    <img v-for="p in fbPictures" :src="p.picture" :key="p.id" />
+                </div>            
             </div>
         </div>
         <div class="col-md-4">
@@ -96,6 +98,7 @@ export default {
                 playedCaptions: [],
             },
             myCaptions: [],
+            fbPictures: []
         }
     },
     created(){
@@ -109,12 +112,11 @@ export default {
             api.GetState()
             .then(x=> this.state = x)
         },
+        getFBPictures(){
+            fb.GetPhotos( photos => this.fbPictures = photos.data );
+        },
         flipPicture(){
             api.FlipPicture()
-        },
-        fbPictures()
-        {
-            fb.getPhotos();
         },
         login() {
             fb.FBLogin();
@@ -136,6 +138,9 @@ export default {
         isDealer(){
             return this.playerId() == this.state.dealerId;
         }
+    },
+    components: {
     }
 }
 </script>
+

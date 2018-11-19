@@ -11,7 +11,7 @@ window.fbAsyncInit = function() {
     FB.AppEvents.logPageView();   
     
     FB.getLoginStatus(function(response) {
-        statusChangeCallback(response);
+        //statusChangeCallback(response);
     });
   };
 
@@ -26,7 +26,7 @@ window.fbAsyncInit = function() {
    export function FBLogin(){
        FB.login(
            response => statusChangeCallback(response),
-           {scope: 'public_profile,email'}
+           {scope: 'public_profile,email, user_photos'}
        )
    }
 
