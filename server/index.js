@@ -1,5 +1,6 @@
 const express = require('express');
 const game = require('./game/controller');
+const path = require('path');
 
 const app = express();
 
@@ -15,6 +16,8 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use("/", express.static(__dirname + "/../dist/"));
 app.use('/game', game);
+
+app.use("/", (req, res) => res.sendFile(path.join(__dirname , "/../dist/index.html") )); //sends us back to index & index sends us the play page
 
 app.listen(port);
 
